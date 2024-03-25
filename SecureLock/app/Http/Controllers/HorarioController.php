@@ -14,14 +14,14 @@ class HorarioController extends Controller
     // Listar Horarios
     public function index()
     {
-        $horarios = Horario::get();
+        $horarios = Horario::with(['horarioPersonalLimpieza'])->get();
         return $horarios;
     }
 
     // Ver un Horario
     public function show($id)
     {
-        $horario = Horario::find($id);
+        $horario = Horario::with(['horarioPersonalLimpieza'])->find($id);
         if (is_null($horario)) {
             return 'El horario buscado no existe.';
         }

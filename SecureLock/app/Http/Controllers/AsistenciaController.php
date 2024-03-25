@@ -15,14 +15,14 @@ class AsistenciaController extends Controller
     // Listar Asistencias
     public function index()
     {
-        $asistencias = Asistencia::get();
+        $asistencias = Asistencia::with(['alumnoAsistencia'])->get();
         return $asistencias;
     }
 
     // Ver una Asistencia
     public function show($id)
     {
-        $asistencia = Asistencia::find($id);
+        $asistencia = Asistencia::with(['alumnoAsistencia'])->find($id);
         if (is_null($asistencia)) {
             return 'La asistencia buscada no existe.';
         }
@@ -70,33 +70,22 @@ class AsistenciaController extends Controller
                             'facultad' => $params['facultad'],
                             'creditos' => $params['creditos']
                         ]);
-                        AlumnoAsistencia::create([
+                        $alumnoAsistenciaObj = AlumnoAsistencia::create([
                             'id_asistencia' => $asistencia->id,
                             'id_alumno' => $alumnoObj->id
+                        ]);
+                        
+                        AlumnoAsistenciaCursoHorario::create([
+                            'id_alumno_asistencia' => $alumnoAsistenciaObj->id,
+                            'id_curso_horario' => $params['asistenciaCurso']['id_curso_horario']
                         ]);
                     }
                 };
             };
         };
-
+        
         #alumno asistencia curso horario
-        if (isset($params['asistenciaCurso']) && is_array($params['asistenciaCurso'])) {
-            $alumnoAsistencia = AlumnoAsistencia::find($params['id_alumno_asistencia']);
-            $cursoHorario = CursoHorario::find($params['id_curso_horario']);
-            if (is_null($alumnoAsistencia)) {
-                return "El alumno asistencia no existe.";
-            } else {
-                if (!is_null($cursoHorario)) {
-
-                    AlumnoAsistenciaCursoHorario::create([
-                        'id_alumno_asistencia' => $params['id_alumno_asistencia'],
-                        'id_curso_horario' => $params['id_curso_horario'],
-                    ]);
-                } else {
-                    return "El curso horario no existe.";
-                }
-            };
-        };
+        
 
         return $asistencia;
     }
