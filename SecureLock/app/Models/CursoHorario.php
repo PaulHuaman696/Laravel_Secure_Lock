@@ -9,7 +9,7 @@ class CursoHorario extends Model
 {
     use HasFactory;
     protected $table = 'curso_horario';
-
+    public $timestamps = false;
     protected $fillable = [
         'id_curso',
         'id_horario'

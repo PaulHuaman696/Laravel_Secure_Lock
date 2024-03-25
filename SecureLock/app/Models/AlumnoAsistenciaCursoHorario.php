@@ -10,7 +10,7 @@ class AlumnoAsistenciaCursoHorario extends Model
     use HasFactory;
 
     protected $table = 'alumno_asistencia_curso_horario';
-
+    public $timestamps = false;
     protected $fillable = [
         'id_alumno_asistencia',
         'id_curso_horario'

@@ -10,7 +10,7 @@ class AlumnoAsistencia extends Model
     use HasFactory;
 
     protected $table = 'alumno_asistencia';
-
+    public $timestamps = false;
     protected $fillable = [
         'id_alumno',
         'id_asistencia'

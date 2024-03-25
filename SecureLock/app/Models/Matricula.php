@@ -9,7 +9,7 @@ class Matricula extends Model
 {
     use HasFactory;
     protected $table = 'matriculas';
-
+    public $timestamps = false;
     protected $fillable = [
         'id_curso',
         'id_alumno'

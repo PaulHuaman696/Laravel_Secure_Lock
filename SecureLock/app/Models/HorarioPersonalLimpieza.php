@@ -9,7 +9,7 @@ class HorarioPersonalLimpieza extends Model
 {
     use HasFactory;
     protected $table = 'horario_personal_limpieza';
-
+    public $timestamps = false;
     protected $fillable = [
         'id_horario',
         'id_personalLimpieza'
