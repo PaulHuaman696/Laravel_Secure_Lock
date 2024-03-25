@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Usuario;
 use Illuminate\Http\Request;
 
@@ -34,8 +35,10 @@ class UsuarioController extends Controller
             'apellido' => $params['apellido'],
             'telefono' => $params['telefono'],
             'genero' => $params['genero'],
-            'huella' => $params['huella']
+            'huella' => $params['huella'],
+            'tipo_user' => $params['tipo_user']
         ]);
+
 
         return $usuario;
     }

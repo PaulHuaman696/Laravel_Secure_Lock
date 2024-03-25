@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alumno;
+use App\Models\Usuario;
 use Illuminate\Http\Request;
 
 class AlumnoController extends Controller
@@ -10,14 +11,14 @@ class AlumnoController extends Controller
     // Listar Alumnos
     public function index()
     {
-        $alumnos = Alumno::get();
+        $alumnos = Alumno::with('usuario')->get();
         return $alumnos;
     }
 
     // Ver un Alumno
     public function show($id)
     {
-        $alumno = Alumno::find($id);
+        $alumno = Alumno::with('usuario')->find($id);
         if (is_null($alumno)) {
             return 'El alumno buscado no existe.';
         }
@@ -28,15 +29,30 @@ class AlumnoController extends Controller
     public function store(Request $request)
     {
         $params = $request->all();
-        $alumno = Alumno::create([
-            'id_usuario' => $params['id_usuario'],
-            'codigo' => $params['codigo'],
-            'facultad' => $params['facultad'],
-            'especialidad' => $params['especialidad'],
-            'ciclo' => $params['ciclo']
-        ]);
+        if (isset($params['usuario']) && is_array($params['usuario'])) {
+            $usuario = $params['usuario'];
 
-        return $alumno;
+            // Crear un nuevo usuario con los datos proporcionados
+            $usuarioObj = Usuario::create([
+                'email' => $usuario['email'],
+                'pass' => $usuario['pass'],
+                'nombre' => $usuario['nombre'],
+                'apellido' => $usuario['apellido'],
+                'telefono' => $usuario['telefono'],
+                'genero' => $usuario['genero'],
+                'huella' => $usuario['huella'],
+                'tipo_user' => $usuario['tipo_user']
+            ]);
+            $alumno = Alumno::create([
+                'id_usuario' => $usuarioObj->id,
+                'codigo' => $params['codigo'],
+                'facultad' => $params['facultad'],
+                'especialidad' => $params['especialidad'],
+                'ciclo' => $params['ciclo']
+            ]);
+
+            return $alumno;
+        }
     }
 
     // Eliminar Alumno

@@ -1,7 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Docente;
+use App\Models\Usuario;
 use Illuminate\Http\Request;
 
 class DocenteController extends Controller
@@ -9,14 +11,14 @@ class DocenteController extends Controller
     // Listar Docentes
     public function index()
     {
-        $docentes = Docente::get();
+        $docentes = Docente::with('usuario')->get();
         return $docentes;
     }
 
     // Ver un Docente
     public function show($id)
     {
-        $docente = Docente::find($id);
+        $docente = Docente::with('usuario')->find($id);
         if (is_null($docente)) {
             return 'El docente buscado no existe.';
         }
@@ -27,14 +29,29 @@ class DocenteController extends Controller
     public function store(Request $request)
     {
         $params = $request->all();
-        $docente = Docente::create([
-            'id_usuario' => $params['id_usuario'],
-            'codigo' => $params['codigo'],
-            'grado' => $params['grado'],
-            'facultad' => $params['facultad']
-        ]);
+        if (isset($params['usuario']) && is_array($params['usuario'])) {
+            $usuario = $params['usuario'];
 
-        return $docente;
+            // Crear un nuevo usuario con los datos proporcionados
+            $usuarioObj = Usuario::create([
+                'email' => $usuario['email'],
+                'pass' => $usuario['pass'],
+                'nombre' => $usuario['nombre'],
+                'apellido' => $usuario['apellido'],
+                'telefono' => $usuario['telefono'],
+                'genero' => $usuario['genero'],
+                'huella' => $usuario['huella'],
+                'tipo_user' => $usuario['tipo_user']
+            ]);
+            $docente = Docente::create([
+                'id_usuario' => $usuarioObj->id,
+                'codigo' => $params['codigo'],
+                'grado' => $params['grado'],
+                'facultad' => $params['facultad']
+            ]);
+
+            return $docente;
+        }
     }
 
     // Eliminar Docente

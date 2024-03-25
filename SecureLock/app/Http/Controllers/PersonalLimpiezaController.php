@@ -1,7 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\PersonalLimpieza;
+use App\Models\Usuario;
 use Illuminate\Http\Request;
 
 class PersonalLimpiezaController extends Controller
@@ -9,14 +11,14 @@ class PersonalLimpiezaController extends Controller
     // Listar Personal de Limpieza
     public function index()
     {
-        $personalLimpieza = PersonalLimpieza::get();
+        $personalLimpieza = PersonalLimpieza::with('usuario')->get();
         return $personalLimpieza;
     }
 
     // Ver un Miembro del Personal de Limpieza
     public function show($id)
     {
-        $miembro = PersonalLimpieza::find($id);
+        $miembro = PersonalLimpieza::with('usuario')->find($id);
         if (is_null($miembro)) {
             return 'El miembro del personal de limpieza buscado no existe.';
         }
@@ -27,12 +29,27 @@ class PersonalLimpiezaController extends Controller
     public function store(Request $request)
     {
         $params = $request->all();
-        $miembro = PersonalLimpieza::create([
-            'id_usuario' => $params['id_usuario'],
-            'codigo' => $params['codigo']
-        ]);
+        if (isset($params['usuario']) && is_array($params['usuario'])) {
+            $usuario = $params['usuario'];
 
-        return $miembro;
+            // Crear un nuevo usuario con los datos proporcionados
+            $usuarioObj = Usuario::create([
+                'email' => $usuario['email'],
+                'pass' => $usuario['pass'],
+                'nombre' => $usuario['nombre'],
+                'apellido' => $usuario['apellido'],
+                'telefono' => $usuario['telefono'],
+                'genero' => $usuario['genero'],
+                'huella' => $usuario['huella'],
+                'tipo_user' => $usuario['tipo_user']
+            ]);
+            $miembro = PersonalLimpieza::create([
+                'id_usuario' => $usuarioObj->id,
+                'codigo' => $params['codigo']
+            ]);
+
+            return $miembro;
+        }
     }
 
     // Eliminar un Miembro del Personal de Limpieza

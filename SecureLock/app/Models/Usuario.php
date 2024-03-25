@@ -20,7 +20,8 @@ class Usuario extends Model
         'apellido',
         'telefono',
         'genero',
-        'huella'
+        'huella',
+        'tipo_user'
     ];
 
     public function alumno(){

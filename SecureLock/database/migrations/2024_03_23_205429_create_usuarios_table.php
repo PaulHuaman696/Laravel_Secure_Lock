@@ -22,6 +22,8 @@ return new class extends Migration
             $table->integer('telefono');
             $table->string('genero');
             $table->text('huella');
+            $table->string('tipo_user');
+
             $table->timestamps();
             $table->softDeletes();
         });
