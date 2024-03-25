@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('dia');
             $table->time('hora_inicio');
+            $table->time('hora_fin');
             $table->timestamps();
             $table->softDeletes();
         });
